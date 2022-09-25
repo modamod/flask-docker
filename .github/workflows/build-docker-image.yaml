@@ -17,14 +17,14 @@ jobs:
         uses: aws-actions/configure-aws-credentials@master
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ secrets.ECR_ROLE }}
+          role-to-assume: arn:aws:iam::677293677370:role/GithubAccessRole
           role-session-name: OIDCSession
 
       - run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 677293677370.dkr.ecr.us-east-1.amazonaws.com
           docker build -t modamod/flask-docker .
-          docker tag modamod/flask-docker:latest ${{ secrets.ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
-          docker push ${{ secrets.ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
+          docker tag modamod/flask-docker:latest 677293677370.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
+          docker push 677293677370.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
         working-directory: ./docker
 
 
