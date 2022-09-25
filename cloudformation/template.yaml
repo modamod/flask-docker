@@ -31,9 +31,15 @@ Parameters:
     Type: String
     Default: "modamod"
 
+  ContainerPort:
+    Description: Container Port.
+    Type: String
+    Default: 5000
+
   CertificateArn:
     Description: Certificate for the listener port.
     Type: String
+
 
 
 Resources:
@@ -213,8 +219,8 @@ Resources:
       VpcId: !Ref myVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
+          FromPort: !Ref ContainerPort
+          ToPort: !Ref ContainerPort
           SourceSecurityGroupId: !GetAtt PublicSecurityGroup.GroupId
 
       Tags:
@@ -308,7 +314,7 @@ Resources:
       TargetType: ip
       Name: sample-website-tg
       Protocol: HTTP
-      Port: 80
+      Port: !Ref ContainerPort
       VpcId: !Ref myVPC
 
   ECSLogGroup:
@@ -333,7 +339,7 @@ Resources:
           Cpu: 256
           Memory: 512
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: !Ref ContainerPort
           Essential: true
           LogConfiguration:
             LogDriver: awslogs
@@ -359,7 +365,7 @@ Resources:
             - !Ref PrivateSubnet1
       LoadBalancers:
         - ContainerName: !Ref ClusterName
-          ContainerPort: 80
+          ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref HttpsHttpTargetGroup
 
     DependsOn: HttpsListener
