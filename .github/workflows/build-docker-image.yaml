@@ -1,0 +1,28 @@
+name: Build Docker image
+
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.ECR_ROLE }}
+          role-session-name: OIDCSession
+
+      - run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ACCOUNT_ID }}.dkr.ecr.region.amazonaws.com
+          docker build -t modamod/flask-docker .
+          docker tag modamod/flask-docker:latest ${{ secrets.ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
+          docker push ${{ secrets.ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/modamod/flask-docker:latest
+        working-directory: ./docker
+
+
+        shell: bash
