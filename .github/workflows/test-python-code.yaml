@@ -6,8 +6,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    strategy:
-
     steps:
       - uses: actions/checkout@v3
       - name: install-aws-cli-action
@@ -29,4 +27,3 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
-
